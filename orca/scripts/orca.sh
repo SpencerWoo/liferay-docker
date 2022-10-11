@@ -62,6 +62,14 @@ function command_install {
 	echo "$(pwd)/scripts/orca.sh \${@}" >> "/usr/local/bin/orca"
 
 	chmod a+x "/usr/local/bin/orca"
+
+	install -d -m 0755 -o 1001 /opt/liferay/db-data
+	install -d -m 0755 -o 1000 /opt/liferay/jenkins-home
+	install -d -m 0755 -o 1000 /opt/liferay/shared-volume
+	install -d -m 0755 -o 1000 /opt/liferay/shared-volume/document-library
+
+	install -d -m 0755 -o 1000 /opt/liferay/shared-volume/secrets
+	install -m 0644 -o 1000 /opt/liferay/shared-volume/secrets/mysql_backup_password.txt
 }
 
 function command_mysql {
@@ -119,6 +127,8 @@ function main {
 	cd $(dirname "${script_path}")/../
 
 	check_usage ${@}
+
+	# force usage check is valid
 
 	execute_command ${@}
 }

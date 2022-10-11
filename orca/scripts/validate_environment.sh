@@ -25,6 +25,30 @@ function check_dirs {
 	check_dir "/opt/liferay/shared-volume/document-library" 1000
 }
 
+function check_file {
+	local file=${1}
+	local uid=${2}
+
+	if [ -d "${file}" ]
+	then
+		if [ ! $(stat -c ) ]
+		then
+			echo "The permissions of the ${file} are not correct. Please change the owner to uid ${uid}."
+
+			ERROR=1
+		fi
+	else
+		echo "The file ${file} does not exist. Please create it and change the owner of it to uid ${uid}."
+
+		ERROR=1
+	fi
+}
+
+function check_files {
+	check_file "/opt/liferay/shared-volume/secrets/mysql_liferay_password.txt" 1000
+	check_file "/opt/liferay/shared-volume/secrets/mysql_root_password.txt" 1000
+}
+
 function check_utils {
 	for util in docker-compose yq
 	do
