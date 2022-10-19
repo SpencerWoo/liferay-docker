@@ -15,6 +15,7 @@ function check_usage {
 		echo "    ssh <service>: Log in to the service's container"
 		echo "    unseal: Unseal the vault operator"
 		echo "    up: Validate the configuration and start the services with \"docker-compose up\""
+		echo "    version: Show orca version"
 		echo ""
 		echo "All other commands are executed as docker-compose commands from the correct directory."
 		echo ""
@@ -119,6 +120,12 @@ function command_up {
 	cd builds/deploy
 
 	docker-compose up ${@}
+}
+
+function command_version {
+	readonly DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+	readonly VERSION=${VERSION:-"$(cat ${DIR}/../VERSION.txt)"}
+	echo ${VERSION}
 }
 
 function execute_command {
