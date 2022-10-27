@@ -48,3 +48,11 @@ On the host create the following files with the relevant secrets:
 	/opt/liferay/passwords/BACKUP
 	/opt/liferay/passwords/DB
 	/opt/liferay/passwords/LIFERAY
+
+# Usage
+
+1. [Install ORCA](#ubuntu)
+2. [Setup Vault](#vault)
+3. `orca build latest`
+4. `orca all`
+5. `orca up`
