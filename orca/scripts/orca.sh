@@ -60,7 +60,11 @@ function command_force_primary {
 }
 
 function command_init_environment {
-	scripts/build_services.sh ${@}
+	echo "Running: orca build latest"
+	scripts/build_services.sh latest
+
+	echo "Creating directories"
+	# functionalize these
 	install -d -m 0755 -o 1001 /opt/liferay/db-data
 	install -d -m 0755 -o 1001 /opt/liferay/monitoring-proxy-db-data
 
@@ -71,8 +75,10 @@ function command_init_environment {
 	install -d -m 0755 -o 1000 /opt/liferay/shared-volume/secrets
 	install -d -m 0755 -o 1000 /opt/liferay/shared-volume/document-library
 
+	echo "Starting vault"
 	orca up -d vault
 
+	echo "Configuring vault"
 	docker exec -i vault bash < init_environment.sh
 }
 
