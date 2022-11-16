@@ -9,6 +9,7 @@ function check_usage {
 		echo "    all: Build as \"latest\" and deploy automatically"
 		echo "    build: Call build_services.sh"
 		echo "    force_primary: Change the database server configuration and make the current server the primary. Only use this in emergencies and on the node which was last written by the cluster."
+		echo "    init-environment: Initialize environment setup"
 		echo "    install: Install this script"
 		echo "    mysql: Log into database server on this host"
 		echo "    setup_shared_volume: Enable GlusterFS and create the necessary mount point for the shared volume"
@@ -56,6 +57,23 @@ function command_deploy {
 
 function command_force_primary {
 	sed -i "s/safe_to_bootstrap: 0/safe_to_bootstrap: 1/" /opt/liferay/db-data/data/grastate.dat
+}
+
+function command_init_environment {
+	scripts/build_services.sh ${@}
+	install -d -m 0755 -o 1001 /opt/liferay/db-data
+	install -d -m 0755 -o 1001 /opt/liferay/monitoring-proxy-db-data
+
+	install -d -m 0755 -o 1000 /opt/liferay/jenkins-home
+	install -d -m 0755 -o 1000 /opt/liferay/vault/data
+
+	install -d -m 0755 -o 1000 /opt/liferay/shared-volume
+	install -d -m 0755 -o 1000 /opt/liferay/shared-volume/secrets
+	install -d -m 0755 -o 1000 /opt/liferay/shared-volume/document-library
+
+	orca up -d vault
+
+	docker exec -i vault bash < init_environment.sh
 }
 
 function command_install {
