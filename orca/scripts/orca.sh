@@ -50,7 +50,7 @@ function command_build {
 }
 
 function command_version {
-	echo "3"
+	echo "4"
 }
 
 function command_deploy {
@@ -87,7 +87,9 @@ function command_init_environment {
 
 	echo "====="
 	echo "Starting vault"
-	execute_command orca up -d vault
+	# orca up -d vault
+	main orca up -d vault
+#	execute_command up -d vault
 
 	echo "====="
 	echo "Configuring vault"
