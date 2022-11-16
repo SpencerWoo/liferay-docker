@@ -49,6 +49,10 @@ function command_build {
 	scripts/build_services.sh ${@}
 }
 
+function command_version {
+	echo "1"
+}
+
 function command_deploy {
 	cd builds
 
