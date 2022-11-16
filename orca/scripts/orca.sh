@@ -50,7 +50,7 @@ function command_build {
 }
 
 function command_version {
-	echo "2"
+	echo "3"
 }
 
 function command_deploy {
@@ -64,9 +64,15 @@ function command_force_primary {
 }
 
 function command_init_environment {
+	echo "====="
 	echo "Running: orca build latest"
 	scripts/build_services.sh latest
 
+	# license
+	# orca build latest
+	# orca all
+
+	echo "====="
 	echo "Creating directories"
 	# functionalize these
 	install -d -m 0755 -o 1001 /opt/liferay/db-data
@@ -79,9 +85,11 @@ function command_init_environment {
 	install -d -m 0755 -o 1000 /opt/liferay/shared-volume/secrets
 	install -d -m 0755 -o 1000 /opt/liferay/shared-volume/document-library
 
+	echo "====="
 	echo "Starting vault"
-	orca up -d vault
+	execute_command orca up -d vault
 
+	echo "====="
 	echo "Configuring vault"
 	docker exec -i vault bash < scripts/init_environment.sh
 }
