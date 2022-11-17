@@ -50,7 +50,7 @@ function command_build {
 }
 
 function command_version {
-	echo "7"
+	echo "1"
 }
 
 function command_deploy {
@@ -91,7 +91,7 @@ function command_init_environment {
 
 	echo "====="
 	echo "Configuring vault"
-	docker exec -i vault bash < orca/scripts/init_environment.sh
+	docker exec -i vault bash < scripts/init_environment.sh
 }
 
 function command_install {
