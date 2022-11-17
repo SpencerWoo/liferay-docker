@@ -50,7 +50,7 @@ function command_build {
 }
 
 function command_version {
-	echo "1"
+	echo "2"
 }
 
 function command_deploy {
@@ -91,6 +91,8 @@ function command_init_environment {
 
 	echo "====="
 	echo "Configuring vault"
+	scripts/init_environment.sh
+	pwd
 	docker exec -i vault bash < scripts/init_environment.sh
 }
 
