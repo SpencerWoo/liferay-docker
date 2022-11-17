@@ -50,7 +50,7 @@ function command_build {
 }
 
 function command_version {
-	echo "6"
+	echo "7"
 }
 
 function command_deploy {
@@ -66,11 +66,11 @@ function command_force_primary {
 function command_init_environment {
 	echo "====="
 	echo "Running: orca build latest"
-	execute_command build latest
+	main build latest
 
 	echo "====="
 	echo "Running: orca all"
-	execute_command all
+	main all
 
 	echo "====="
 	echo "Creating directories"
@@ -87,11 +87,11 @@ function command_init_environment {
 
 	echo "====="
 	echo "Starting vault"
-	execute_command up -d vault
+	main up -d vault
 
 	echo "====="
 	echo "Configuring vault"
-	docker exec -i vault bash < init_environment.sh
+	docker exec -i vault bash < orca/scripts/init_environment.sh
 }
 
 function command_install {
