@@ -64,76 +64,7 @@ function command_force_primary {
 }
 
 function command_init_environment {
-	echo "====="
-	echo "Running: orca build latest"
-	main build latest
-
-	echo "====="
-	echo "Running: orca all"
-	main all
-
-	echo "====="
-	echo "Creating directories"
-	# functionalize these
-	install -d -m 0755 -o 1001 /opt/liferay/db-data
-	install -d -m 0755 -o 1001 /opt/liferay/monitoring-proxy-db-data
-
-	install -d -m 0755 -o 1000 /opt/liferay/jenkins-home
-	install -d -m 0755 -o 1000 /opt/liferay/vault/data
-
-	install -d -m 0755 -o 1000 /opt/liferay/shared-volume
-	install -d -m 0755 -o 1000 /opt/liferay/shared-volume/secrets
-	install -d -m 0755 -o 1000 /opt/liferay/shared-volume/document-library
-
-	echo "====="
-	echo "Starting vault"
-	main up -d vault
-
-	echo "====="
-	echo "Configuring vault"
-#	cd ../../
-#	scripts/init_environment.sh
-#	docker exec vault bash < scripts/init_environment.sh
-
-#	docker cp scripts/init_environment.sh vault:/tmp/init_environment.sh
-
-#	docker exec vault bash -c ". /tmp/init_environment.sh" > script.out
-#	docker exec vault bash -c "vault operator generate-root" &> init.out
-
-#	docker exec vault bash -c "vault operator init -key-shares=1 -key-threshold=1"
-	docker exec vault bash -c ". /usr/local/bin/init_operator.sh" &> init.out
-
-	local unseal_key=$(head -n 1 init.out | grep -oE '[^ ]+$')
-	echo unseal_key
-
-	[[ -z "$unseal_key" ]] && { exit 1; }
-
-	echo "${unseal_key}" | main unseal
-
-	local root_token=$(head -n 3 init.out | grep -oE '[^ ]+$')
-
-	[[ -z "root_token" ]] && { exit 1; }
-
-	docker exec vault bash -c "export ORCA_VAULT_TOKEN=${root_token}"
-	docker exec vault bash -c ". /usr/local/bin/init_secrets.sh" &> secrets.out
-
-	while IFS= read -r line; do
-		local service_directory=$(cat line | grep -oE '[^ ]+$')
-		echo service_directory
-#		install -d -m 0755 -o 1000 /opt/liferay/passwords/${service}
-		install -d -m 0755 -o 1000 ${service_directory}
-
-		local service_password=$(cat line | grep -oE '^.+[ $]')
-		echo service_password
-		echo ${service_password} > ${service_directory}
-	done < secrets.out
-
-
-	# for each service, export on host
-#	install -d -m 0755 -o 1000 /opt/liferay/passwords/${service}
-#	export
-
-
+	scripts/init_environment.sh ${@}
 }
 
 function command_install {
