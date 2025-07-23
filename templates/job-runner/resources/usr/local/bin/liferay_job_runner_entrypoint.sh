@@ -11,8 +11,6 @@ function main {
 
 	register_crontab
 
-	cron
-
 	run_jobs
 }
 

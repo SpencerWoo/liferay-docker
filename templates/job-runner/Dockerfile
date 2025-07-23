@@ -3,8 +3,19 @@ FROM --platform=${TARGETPLATFORM} liferay/jdk11-jdk8:latest AS liferay-jdk11-jdk
 COPY resources/etc/created-date /etc/created-date
 
 RUN apt-get update && \
-	DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get install --no-install-recommends --yes cron gettext && \
+	DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get install --no-install-recommends --yes cron gettext gosu && \
 	apt-get clean
+
+# create job_runner group and user
+RUN groupadd -r job_runner && useradd --no-log-init -r -g job_runner job_runner
+
+RUN mkdir -p /opt/liferay/job-queue
+RUN chown -R job_runner:job_runner /opt/liferay/job-queue
+RUN chmod -R 775 /opt/liferay/job-queue
+
+RUN echo "root" > /etc/cron.allow && \
+    echo "job_runner" >> /etc/cron.allow && \
+    chmod 0644 /etc/cron.allow
 
 FROM liferay-jdk11-jdk8
 
@@ -17,7 +28,9 @@ ARG TARGETPLATFORM
 
 COPY resources/ /
 
-ENTRYPOINT ["tini", "-v", "--", "/usr/local/bin/liferay_job_runner_entrypoint.sh"]
+COPY entrypoint.sh /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
 
 ENV LANG="C.UTF-8"
 
