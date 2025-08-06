@@ -1,10 +1,7 @@
 #!/bin/bash
-set -x
 
-echo ""
-echo "Starting cron."
-echo ""
-cron
+# run job_runner setup script as root
+bash /usr/local/bin/liferay_job_runner_setup.sh
 
-# run entrypoint as job_runner
-exec gosu job_runner tini -v -- /usr/local/bin/liferay_job_runner_entrypoint.sh
+# run job_runner entrypoint as job_runner
+exec gosu job_runner tini -v -- /usr/local/bin/liferay_job_runner.sh
